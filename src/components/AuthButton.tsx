@@ -11,12 +11,17 @@ export default function AuthButton({ user }: AuthButtonProps) {
   const supabase = createClient()
 
   const handleSignIn = async () => {
+    const isProd = process.env.NODE_ENV === 'production';
+    
+    const redirectTo = isProd 
+      ? "https://www.almostcrackd.ai/auth/callback" 
+      : "http://localhost:3000/auth/callback";      
+
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/`,
+        redirectTo: redirectTo,
         queryParams: {
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
           access_type: 'offline',
           prompt: 'consent',
         },
