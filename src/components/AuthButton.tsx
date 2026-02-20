@@ -11,30 +11,21 @@ export default function AuthButton({ user }: AuthButtonProps) {
   const supabase = createClient()
 
   const handleSignIn = async () => {
-    const getURL = () => {
-      let url =
-        process?.env?.NEXT_PUBLIC_SITE_URL ?? 
-        process?.env?.NEXT_PUBLIC_VERCEL_URL ?? 
-        'http://localhost:3000/';
-      
-      url = url.includes('http') ? url : `https://${url}`;
-      url = url.endsWith('/') ? url.slice(0, -1) : url;
-      return url;
-    };
+    const origin = window.location.origin;
 
-    const redirectTo = `${getURL()}/auth/callback`;
+    const redirectTo = `${origin}/auth/callback`;
 
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectTo, // This will now be your specific Vercel URL
+        redirectTo: redirectTo,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
         },
       },
-    });
-  };
+    })
+  }
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -50,7 +41,7 @@ export default function AuthButton({ user }: AuthButtonProps) {
           </span>
           <button
             onClick={handleSignOut}
-            className="py-2 px-4 rounded-md no-underline bg-slate-700 hover:bg-slate-800 text-white text-sm"
+            className="py-2 px-4 rounded-md no-underline bg-slate-700 hover:bg-slate-800 text-white text-sm transition-colors"
           >
             Sign Out
           </button>
@@ -58,7 +49,7 @@ export default function AuthButton({ user }: AuthButtonProps) {
       ) : (
         <button
           onClick={handleSignIn}
-          className="py-2 px-4 rounded-md no-underline bg-blue-600 hover:bg-blue-700 text-white font-bold"
+          className="py-2 px-4 rounded-md no-underline bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors"
         >
           Sign In with Google
         </button>
