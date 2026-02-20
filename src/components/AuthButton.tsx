@@ -11,23 +11,30 @@ export default function AuthButton({ user }: AuthButtonProps) {
   const supabase = createClient()
 
   const handleSignIn = async () => {
-    const isProd = process.env.NODE_ENV === 'production';
-    
-    const redirectTo = isProd 
-      ? "https://www.almostcrackd.ai/auth/callback" 
-      : "http://localhost:3000/auth/callback";      
+    const getURL = () => {
+      let url =
+        process?.env?.NEXT_PUBLIC_SITE_URL ?? 
+        process?.env?.NEXT_PUBLIC_VERCEL_URL ?? 
+        'http://localhost:3000/';
+      
+      url = url.includes('http') ? url : `https://${url}`;
+      url = url.endsWith('/') ? url.slice(0, -1) : url;
+      return url;
+    };
+
+    const redirectTo = `${getURL()}/auth/callback`;
 
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectTo,
+        redirectTo: redirectTo, // This will now be your specific Vercel URL
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
         },
       },
-    })
-  }
+    });
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
