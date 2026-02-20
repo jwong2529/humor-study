@@ -22,3 +22,12 @@ create table public.captions (
 create index IF not exists idx_captions_image_id on public.captions using btree (image_id) TABLESPACE pg_default;
 
 create index IF not exists idx_captions_like_count_desc_id on public.captions using btree (like_count desc, id) TABLESPACE pg_default;
+
+create table public.caption_votes (
+  user_id uuid not null,
+  caption_id uuid not null,
+  vote_value smallint not null,
+  constraint caption_votes_pkey primary key (user_id, caption_id),
+  constraint caption_votes_caption_id_fkey foreign key (caption_id) references captions (id) on delete cascade,
+  constraint caption_votes_user_id_fkey foreign key (user_id) references auth.users (id) on delete cascade
+) tablespace pg_default;
