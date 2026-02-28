@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import AuthButton from '@/components/AuthButton'
+import confetti from 'canvas-confetti'
 
 export default function UploadPage() {
     const [user, setUser] = useState<any>(null)
@@ -127,6 +128,32 @@ export default function UploadPage() {
             setCaptions(captionsData)
             setStatus('Success! Captions generated.')
 
+            // Trigger Confetti!
+            const duration = 3000;
+            const end = Date.now() + duration;
+
+            const frame = () => {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#3b82f6', '#8b5cf6', '#ec4899']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#3b82f6', '#8b5cf6', '#ec4899']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            };
+            frame();
+
         } catch (err: any) {
             console.error(err)
             setError(err.message || "An unexpected error occurred.")
@@ -137,8 +164,8 @@ export default function UploadPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0f172a] text-slate-200 w-full flex flex-col">
-            <nav className="p-8 lg:p-12 w-full flex justify-between items-center border-b border-slate-700 bg-[#1e293b]">
+        <div className="h-screen bg-[#0f172a] text-slate-200 w-full flex flex-col overflow-hidden">
+            <nav className="p-6 lg:px-12 lg:py-6 w-full flex justify-between items-center border-b border-slate-700 bg-[#1e293b] shrink-0 z-20">
                 <div>
                     <h1 className="text-3xl font-black tracking-tight text-white mb-2">Upload Image</h1>
                     <Link href="/" className="text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors flex items-center gap-1">
@@ -150,15 +177,18 @@ export default function UploadPage() {
                 </div>
             </nav>
 
-            <main className="flex-1 flex flex-col items-center p-8 lg:p-12 max-w-4xl mx-auto w-full">
+            <main className="flex-1 w-full overflow-hidden flex justify-center">
                 {!user ? (
-                    <div className="flex flex-col items-center justify-center p-12 bg-slate-800/50 rounded-3xl border border-slate-700 w-full text-center">
-                        <h2 className="text-2xl font-bold text-white mb-4">Authentication Required</h2>
-                        <p className="text-slate-400 text-lg mb-8">Please sign in to upload images and generate captions.</p>
+                    <div className="p-8 w-full h-full overflow-y-auto custom-scrollbar flex flex-col items-center justify-center">
+                        <div className="flex flex-col items-center justify-center p-12 bg-slate-800/50 rounded-3xl border border-slate-700 w-full max-w-3xl text-center">
+                            <h2 className="text-2xl font-bold text-white mb-4">Authentication Required</h2>
+                            <p className="text-slate-400 text-lg mb-8">Please sign in to upload images and generate captions.</p>
+                        </div>
                     </div>
                 ) : (
-                    <div className="w-full flex flex-col items-center gap-12">
-                        <div className="w-full max-w-2xl flex flex-col gap-6">
+                    <div className={`w-full max-w-7xl mx-auto h-full flex flex-col lg:flex-row gap-8 lg:gap-12 p-6 lg:p-8 ${captions.length > 0 ? '' : 'justify-center items-start overflow-y-auto custom-scrollbar'}`}>
+                        {/* LEFT COLUMN - Fixed Form */}
+                        <div className={`w-full ${captions.length > 0 ? 'lg:w-[400px] shrink-0 lg:h-full lg:overflow-y-auto custom-scrollbar lg:pr-4' : 'max-w-2xl mx-auto'} flex flex-col gap-6 transition-all duration-500`}>
                             <div className="bg-[#1e293b] border border-slate-700 rounded-3xl p-8 shadow-xl">
                                 <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                                     <span className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm">1</span>
@@ -204,15 +234,21 @@ export default function UploadPage() {
                                 <button
                                     onClick={handleUpload}
                                     disabled={!file || loading}
-                                    className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2"
+                                    className={`w-full py-4 px-6 font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 relative overflow-hidden ${loading
+                                        ? 'magic-button-loading text-white'
+                                        : !file
+                                            ? 'bg-slate-700 text-slate-500'
+                                            : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-blue-500/25 text-white'
+                                        }`}
                                 >
                                     {loading ? (
                                         <>
-                                            <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 sparkle-pulse"></div>
+                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
-                                            Processing...
+                                            <span className="sparkle-text relative z-10 tracking-widest uppercase text-sm">Hope you find these funny...</span>
                                         </>
                                     ) : (
                                         "Upload & Generate Captions"
@@ -243,13 +279,14 @@ export default function UploadPage() {
                             </div>
                         </div>
 
+                        {/* RIGHT COLUMN - Results */}
                         {captions.length > 0 && (
-                            <div className="w-full flex flex-col items-center mt-4 mb-20">
-                                <h2 className="text-3xl font-black text-white mb-10 border-b-2 border-slate-700/50 pb-4 px-8 text-center">
+                            <div className="w-full lg:flex-1 lg:h-full lg:overflow-y-auto custom-scrollbar lg:pr-4 flex flex-col pb-20 animate-[fadeIn_0.5s_ease-out]">
+                                <h2 className="text-3xl font-black text-white mb-10 border-b-2 border-slate-700/50 pb-4 px-8 hidden lg:block">
                                     Resulting Captions
                                 </h2>
 
-                                <div className="flex flex-col gap-16 w-full max-w-2xl">
+                                <div className="flex flex-col gap-12 w-full lg:max-w-2xl mx-auto">
                                     {captions.map((caption: any, idx) => (
                                         <div key={idx} className="group bg-[#1e293b] border border-slate-700 rounded-2xl shadow-2xl hover:border-blue-500/50 transition-all duration-300 overflow-hidden flex flex-col h-full select-none">
                                             <div className="bg-[#334155] px-6 py-4 flex justify-between items-center">
@@ -309,6 +346,35 @@ export default function UploadPage() {
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: rgba(100, 116, 139, 1);
+        }
+
+        .magic-button-loading {
+            background: linear-gradient(270deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+            background-size: 300% 300%;
+            animation: magicGlow 3s ease infinite;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @keyframes magicGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .sparkle-pulse {
+            animation: pulseOpacity 1.5s infinite alternate;
+        }
+
+        @keyframes pulseOpacity {
+            from { opacity: 0.1; }
+            to { opacity: 0.4; }
+        }
+
+        .sparkle-text {
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: textShine 2s infinite linear;
         }
       `}} />
         </div>

@@ -7,6 +7,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
+import InteractiveCard from '@/components/InteractiveCard'
+
 export default function ListPage() {
   const [rows, setRows] = useState<any[]>([])
   const [error, setError] = useState<any>(null)
@@ -94,44 +96,46 @@ export default function ListPage() {
                   captionId={rows[currentIndex].id}
                   onSwipe={handleSwipe}
                 >
-                  <div className="group bg-[#1e293b] border border-slate-700 rounded-2xl shadow-2xl hover:border-blue-500/50 transition-all duration-300 overflow-hidden flex flex-col h-full select-none">
-                    {/* Header with ID */}
-                    <div className="bg-[#334155] px-6 py-4 flex justify-between items-center">
-                      <span className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">Record Entry</span>
-                      <span className="bg-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-blue-500/20">
-                        ID: {rows[currentIndex].id?.substring(0, 8)}...
-                      </span>
-                    </div>
-
-                    {/* Image Section */}
-                    <div className="relative aspect-video w-full bg-slate-900 overflow-hidden flex-1 min-h-0">
-                      {rows[currentIndex].images?.url ? (
-                        <img
-                          src={rows[currentIndex].images.url}
-                          alt="Caption Context"
-                          draggable={false}
-                          className="w-full h-full object-contain pointer-events-none bg-black"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-600 font-medium">
-                          No Image Available
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="p-8 space-y-6 flex-shrink-0 bg-[#1e293b]">
-                      <div className="relative pl-6 border-l-2 border-slate-700 hover:border-blue-500 transition-colors">
-                        <span className="absolute -left-[1.25rem] top-2 w-2 h-2 rounded-full bg-slate-600 group-hover:bg-blue-500 transition-colors" />
-                        <span className="block text-[11px] font-black text-blue-400 uppercase tracking-widest mb-2">
-                          CAPTION
+                  <InteractiveCard>
+                    <div className="group bg-[#1e293b] border border-slate-700 rounded-2xl shadow-2xl hover:border-blue-500/50 transition-all duration-300 overflow-hidden flex flex-col h-full select-none w-full">
+                      {/* Header with ID */}
+                      <div className="bg-[#334155] px-6 py-4 flex justify-between items-center">
+                        <span className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">Record Entry</span>
+                        <span className="bg-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-blue-500/20">
+                          ID: {rows[currentIndex].id?.substring(0, 8)}...
                         </span>
-                        <p className="text-white text-xl leading-relaxed font-medium pointer-events-none">
-                          {rows[currentIndex].content || "No caption content provided."}
-                        </p>
+                      </div>
+
+                      {/* Image Section */}
+                      <div className="relative aspect-video w-full bg-slate-900 overflow-hidden flex-1 min-h-0">
+                        {rows[currentIndex].images?.url ? (
+                          <img
+                            src={rows[currentIndex].images.url}
+                            alt="Caption Context"
+                            draggable={false}
+                            className="w-full h-full object-contain pointer-events-none bg-black"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-slate-600 font-medium">
+                            No Image Available
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Content Section */}
+                      <div className="p-8 space-y-6 flex-shrink-0 bg-[#1e293b]">
+                        <div className="relative pl-6 border-l-2 border-slate-700 hover:border-blue-500 transition-colors">
+                          <span className="absolute -left-[1.25rem] top-2 w-2 h-2 rounded-full bg-slate-600 group-hover:bg-blue-500 transition-colors" />
+                          <span className="block text-[11px] font-black text-blue-400 uppercase tracking-widest mb-2">
+                            CAPTION
+                          </span>
+                          <p className="text-white text-xl leading-relaxed font-medium pointer-events-none">
+                            {rows[currentIndex].content || "No caption content provided."}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </InteractiveCard>
                 </SwipeableCard>
               ) : (
                 <div className="text-center w-full">
