@@ -40,9 +40,9 @@ export default function ListPage() {
     }
 
     const fetchUser = async () => {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-        setUser(user)
+      const supabase = await createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
     }
 
     fetchCaptions()
@@ -61,6 +61,14 @@ export default function ListPage() {
             <h1 className="text-4xl font-black tracking-tight text-white">Humor Study</h1>
           </div>
           <div className="flex items-center gap-6">
+            {user && (
+              <Link
+                href="/upload"
+                className="py-2 px-4 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-colors"
+              >
+                Upload Image
+              </Link>
+            )}
             <AuthButton user={user} />
           </div>
         </nav>
@@ -72,10 +80,10 @@ export default function ListPage() {
           </div>
         ) : !user ? (
           <div className="flex flex-col items-center justify-center h-[400px] text-center">
-             <div className="p-8 bg-slate-800/50 rounded-3xl border border-slate-700 max-w-md">
-                <h2 className="text-2xl font-bold text-white mb-4">Welcome</h2>
-                <p className="text-slate-400 text-lg">Please sign in to vote on captions.</p>
-             </div>
+            <div className="p-8 bg-slate-800/50 rounded-3xl border border-slate-700 max-w-md">
+              <h2 className="text-2xl font-bold text-white mb-4">Welcome</h2>
+              <p className="text-slate-400 text-lg">Please sign in to vote on captions.</p>
+            </div>
           </div>
         ) : (
           <div className="flex flex-col items-center w-full max-w-2xl">
@@ -98,9 +106,9 @@ export default function ListPage() {
                     {/* Image Section */}
                     <div className="relative aspect-video w-full bg-slate-900 overflow-hidden flex-1 min-h-0">
                       {rows[currentIndex].images?.url ? (
-                        <img 
-                          src={rows[currentIndex].images.url} 
-                          alt="Caption Context" 
+                        <img
+                          src={rows[currentIndex].images.url}
+                          alt="Caption Context"
                           draggable={false}
                           className="w-full h-full object-contain pointer-events-none bg-black"
                         />
@@ -110,7 +118,7 @@ export default function ListPage() {
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Content Section */}
                     <div className="p-8 space-y-6 flex-shrink-0 bg-[#1e293b]">
                       <div className="relative pl-6 border-l-2 border-slate-700 hover:border-blue-500 transition-colors">
@@ -131,7 +139,7 @@ export default function ListPage() {
                 </div>
               )}
             </div>
-            
+
             {/* Swipe Instructions */}
             {rows.length > 0 && currentIndex < rows.length && (
               <div className="flex gap-12 text-slate-400 font-bold tracking-widest text-sm uppercase animate-pulse">
