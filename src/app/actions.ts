@@ -24,8 +24,8 @@ export async function submitVote(captionId: string, voteValue: number) {
     profile_id: user.id,
     caption_id: captionId,
     vote_value: voteValue,
-    created_datetime_utc: new Date().toISOString(),
-    modified_datetime_utc: new Date().toISOString(),
+    created_by_user_id: user.id,
+    modified_by_user_id: user.id,
   };
 
   console.log("Submitting vote:", payload);
