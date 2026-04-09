@@ -8,7 +8,7 @@ import { useState } from 'react'
 interface SwipeableCardProps {
   children: React.ReactNode
   captionId: string
-  onSwipe: () => void
+  onSwipe: (voteValue: number) => void
 }
 
 export default function SwipeableCard({ children, captionId, onSwipe }: SwipeableCardProps) {
@@ -40,13 +40,12 @@ export default function SwipeableCard({ children, captionId, onSwipe }: Swipeabl
       submitVote(captionId, voteValue)
         .then(() => {
              // Delay next card slightly to allow animation to complete
-             setTimeout(onSwipe, 200) 
+             setTimeout(() => onSwipe(voteValue), 200) 
         })
         .catch((err) => {
              console.error("Vote failed", err)
-             // Even if vote fails, we proceed for UX, or maybe show error toast
-             // For now, proceed
-             setTimeout(onSwipe, 200) 
+             // Even if vote fails, we proceed for UX
+             setTimeout(() => onSwipe(voteValue), 200) 
         })
     } else {
       // Return to center
