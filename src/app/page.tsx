@@ -67,8 +67,11 @@ export default function ListPage() {
   }
 
   const handleSwipe = (voteValue: number) => {
+    // Show consensus for the card just swiped before moving to next
+    const consensus = calculateConsensus(currentIndex, voteValue)
+    setLastConsensus(consensus)
+    
     setHistory(prev => [...prev, currentIndex])
-    setLastConsensus(calculateConsensus(currentIndex, voteValue))
     setCurrentIndex(currentIndex + 1)
   }
 
